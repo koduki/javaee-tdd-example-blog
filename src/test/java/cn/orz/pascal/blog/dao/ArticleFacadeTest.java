@@ -47,6 +47,11 @@ public class ArticleFacadeTest extends AbstractJPATest {
         clearData(Article.class);
     }
 
+    private void load() throws Exception {
+        articleFacade.create(new Article(null, "title1", "contents1"));
+        articleFacade.create(new Article(null, "title2", "contents2"));
+    }
+
     @Test
     public void count0_Test() throws Exception {
         assertThat(articleFacade.count(), is(0));
@@ -72,6 +77,30 @@ public class ArticleFacadeTest extends AbstractJPATest {
         assertThat(articles.get(0).getContents(), is("contents1"));
         assertThat(articles.get(1).getTitle(), is("title2"));
         assertThat(articles.get(1).getContents(), is("contents2"));
+        utx.commit();
+    }
+
+    @Test
+    public void update_Test() throws Exception {
+        utx.begin();
+        // init and check.
+        load();
+        List<Article> articles = simpleSort(articleFacade.findAll(), "Title");
+        assertThat(articles.size(), is(2));
+        assertThat(articles.get(0).getTitle(), is("title1"));
+        assertThat(articles.get(1).getTitle(), is("title2"));
+
+        // action
+        articles.get(0).setTitle("title3");
+        articleFacade.edit(articles.get(0));
+        articleFacade.edit(new Article(null, "title4", "contents4"));
+
+        // expected
+        List<Article> updatedArticles = simpleSort(articleFacade.findAll(), "Title");
+        assertThat(updatedArticles.size(), is(3));
+        assertThat(updatedArticles.get(0).getTitle(), is("title2"));
+        assertThat(updatedArticles.get(1).getTitle(), is("title3"));
+        assertThat(updatedArticles.get(2).getTitle(), is("title4"));
         utx.commit();
     }
 }
