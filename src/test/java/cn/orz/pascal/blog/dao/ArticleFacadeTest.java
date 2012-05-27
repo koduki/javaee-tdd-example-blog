@@ -5,6 +5,7 @@
 package cn.orz.pascal.blog.dao;
 
 import cn.orz.pascal.blog.entity.Article;
+import cn.orz.pascal.blog.entity.Comment;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -42,9 +43,12 @@ public class ArticleFacadeTest extends AbstractJPATest {
     }
     @EJB
     ArticleFacade articleFacade;
+    @EJB
+    CommentFacade commentFacade;
 
     @Before
     public void preparePersistenceTest() throws Exception {
+        clearData(Comment.class);
         clearData(Article.class);
     }
 
@@ -165,6 +169,34 @@ public class ArticleFacadeTest extends AbstractJPATest {
         for (Article article : articles20) {
             assertThat(article.getTitle(), is("title" + (j++)));
         }
+        utx.commit();
+    }
+
+    @Test
+    public void comment_add_Test() throws Exception {
+        // init and check.
+        utx.begin();
+        Article article = new Article(1L, "title1", "contents1");
+        articleFacade.create(article);
+        Comment comment = new Comment(null, "user2", "comment2");
+        comment.setArticle(article);
+        commentFacade.create(comment);
+        utx.commit();
+
+        // expected.
+        utx.begin();
+
+        List<Article> articles = simpleSort(articleFacade.findAll(), "Title");
+        assertThat(articles.size(), is(1));
+        assertThat(articles.get(0).getId(), is(1L));
+        assertThat(articles.get(0).getTitle(), is("title1"));
+
+        Comment comment2 = commentFacade.findAll().get(0);
+        assertThat(comment2.getName(), is("user2"));
+        assertThat(comment2.getArticleId(), is(1L));
+        assertThat(comment2.getArticle().getTitle(), is("title1"));
+        assertThat(comment2.getArticle().getId(), is(1L));
+
         utx.commit();
     }
 }
