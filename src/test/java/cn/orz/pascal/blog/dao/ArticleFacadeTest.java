@@ -103,4 +103,35 @@ public class ArticleFacadeTest extends AbstractJPATest {
         assertThat(updatedArticles.get(2).getTitle(), is("title4"));
         utx.commit();
     }
+
+    @Test
+    public void update_timestamp_Test() throws Exception {
+        utx.begin();
+        // init and check.
+        load();
+        List<Article> articles = simpleSort(articleFacade.findAll(), "Id");
+        assertThat(articles.size(), is(2));
+        assertThat(articles.get(0).getCreatedAt(), is(notNullValue()));
+        assertThat(articles.get(0).getUpdatedAt(), is(notNullValue()));
+        Long createdAt1 = articles.get(0).getCreatedAt().getTime();
+        Long updatedAt1 = articles.get(0).getUpdatedAt().getTime();
+        Long createdAt2 = articles.get(1).getCreatedAt().getTime();
+        Long updatedAt2 = articles.get(1).getUpdatedAt().getTime();
+
+        // action
+        articles.get(0).setTitle("title3");
+        articleFacade.edit(articles.get(0));
+        articleFacade.edit(new Article(null, "title4", "contents4"));
+
+        // expected
+        List<Article> updatedArticles = simpleSort(articleFacade.findAll(), "Id");
+        assertThat(updatedArticles.size(), is(3));
+        // record1
+        assertThat(updatedArticles.get(0).getCreatedAt().getTime(), is(createdAt1));
+        assertThat(updatedArticles.get(0).getUpdatedAt().getTime(), is(greaterThan(updatedAt1)));
+        // record2
+        assertThat(updatedArticles.get(1).getCreatedAt().getTime(), is(createdAt2));
+        assertThat(updatedArticles.get(1).getUpdatedAt().getTime(), is(updatedAt2));
+        utx.commit();
+    }
 }
