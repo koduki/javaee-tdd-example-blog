@@ -35,12 +35,6 @@ public class Article implements Serializable {
         this.Contents = Contents;
     }
 
-    public Article(Long id, String title, String Contents) {
-        this.id = id;
-        this.title = title;
-        this.Contents = Contents;
-    }
-
     public Long getId() {
         return id;
     }
