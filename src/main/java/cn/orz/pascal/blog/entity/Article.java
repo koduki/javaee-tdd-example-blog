@@ -16,10 +16,13 @@ import javax.persistence.Id;
  */
 @Entity
 public class Article implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private String title;
+    private String Contents;
 
     public Long getId() {
         return id;
@@ -27,6 +30,22 @@ public class Article implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getContents() {
+        return Contents;
+    }
+
+    public void setContents(String Contents) {
+        this.Contents = Contents;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override
@@ -53,5 +72,4 @@ public class Article implements Serializable {
     public String toString() {
         return "cn.orz.pascal.blog.entity.Article[ id=" + id + " ]";
     }
-
 }
