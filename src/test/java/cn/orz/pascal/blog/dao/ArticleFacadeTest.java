@@ -5,6 +5,7 @@
 package cn.orz.pascal.blog.dao;
 
 import cn.orz.pascal.blog.entity.Article;
+import java.util.List;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.greaterThan;
@@ -41,8 +42,36 @@ public class ArticleFacadeTest extends AbstractJPATest {
     @EJB
     ArticleFacade articleFacade;
 
+    @Before
+    public void preparePersistenceTest() throws Exception {
+        clearData(Article.class);
+    }
+
     @Test
     public void count0_Test() throws Exception {
         assertThat(articleFacade.count(), is(0));
+    }
+
+    @Test
+    public void save_and_select_Test() throws Exception {
+        utx.begin();
+        // init and check.
+        assertThat(articleFacade.count(), is(0));
+
+        // action.
+        articleFacade.create(new Article(null, "title1", "contents1"));
+        assertThat(articleFacade.count(), is(1));
+
+        articleFacade.create(new Article(null, "title2", "contents2"));
+        assertThat(articleFacade.count(), is(2));
+
+        // expected.
+        List<Article> articles = simpleSort(articleFacade.findAll(), "Title");
+        assertThat(articles.size(), is(2));
+        assertThat(articles.get(0).getTitle(), is("title1"));
+        assertThat(articles.get(0).getContents(), is("contents1"));
+        assertThat(articles.get(1).getTitle(), is("title2"));
+        assertThat(articles.get(1).getContents(), is("contents2"));
+        utx.commit();
     }
 }
