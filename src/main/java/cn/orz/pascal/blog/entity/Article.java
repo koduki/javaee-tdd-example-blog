@@ -6,6 +6,7 @@ package cn.orz.pascal.blog.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 
 /**
@@ -18,9 +19,12 @@ public class Article implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ID")
     private Long id;
     private String title;
     private String Contents;
+    @OneToMany(targetEntity = Comment.class, mappedBy = "article")
+    private List<Comment> comments;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -57,6 +61,14 @@ public class Article implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public Date getCreatedAt() {

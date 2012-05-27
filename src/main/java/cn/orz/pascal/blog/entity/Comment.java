@@ -17,7 +17,10 @@ public class Comment implements Serializable {
     private Long id;
     private String name;
     private String Contents;
+    @Column(name = "ARTICLE_ID", insertable = false, updatable = false)
     private Long articleId;
+    @ManyToOne(targetEntity = Article.class)
+    @JoinColumn(name = "ARTICLE_ID", referencedColumnName = "ID")
     private Article article;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date createdAt;
@@ -152,5 +155,10 @@ public class Comment implements Serializable {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = new Date(System.currentTimeMillis());
+    }
+
+    @PostLoad
+    protected void onLoad(){
+        this.articleId = this.article.getId();
     }
 }
