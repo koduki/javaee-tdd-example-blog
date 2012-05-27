@@ -18,6 +18,7 @@ public class Comment implements Serializable {
     private String name;
     private String Contents;
     private Long articleId;
+    private Article article;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date createdAt;
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -62,6 +63,14 @@ public class Comment implements Serializable {
 
     public void setArticleId(Long articleId) {
         this.articleId = articleId;
+    }
+
+    public Article getArticle() {
+        return article;
+    }
+
+    public void setArticle(Article article) {
+        this.article = article;
     }
 
     public Date getCreatedAt() {
