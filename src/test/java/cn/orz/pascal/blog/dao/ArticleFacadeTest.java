@@ -18,24 +18,14 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-
 import javax.ejb.EJB;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
 
 /**
  *
  * @author hiro
  */
 @RunWith(Arquillian.class)
-public class ArticleFacadeTest {
-
-    @PersistenceContext
-    EntityManager em;
-    @Inject
-    UserTransaction utx;
+public class ArticleFacadeTest extends AbstractJPATest {
 
     public ArticleFacadeTest() {
     }
