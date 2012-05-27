@@ -158,6 +158,13 @@ public class ArticleFacadeTest extends AbstractJPATest {
         for (Article article : articles) {
             assertThat(article.getTitle(), is("title" + (i++)));
         }
+
+        List<Article> articles20 = simpleSort(articleFacade.findRecently(20), "Title");
+        assertThat(articles20.size(), is(20));
+        int j = 80;
+        for (Article article : articles20) {
+            assertThat(article.getTitle(), is("title" + (j++)));
+        }
         utx.commit();
     }
 }
