@@ -5,10 +5,8 @@
 package cn.orz.pascal.blog.entity;
 
 import java.io.Serializable;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.Date;
+import javax.persistence.*;
 
 /**
  *
@@ -23,6 +21,10 @@ public class Article implements Serializable {
     private Long id;
     private String title;
     private String Contents;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date createdAt;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
     public Article() {
     }
@@ -57,6 +59,22 @@ public class Article implements Serializable {
         this.title = title;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -80,5 +98,21 @@ public class Article implements Serializable {
     @Override
     public String toString() {
         return "cn.orz.pascal.blog.entity.Article[ id=" + id + " ]";
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = new Date(System.currentTimeMillis());
+        }
+
+        if (this.updatedAt == null) {
+            this.updatedAt = new Date(System.currentTimeMillis());
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = new Date(System.currentTimeMillis());
     }
 }
