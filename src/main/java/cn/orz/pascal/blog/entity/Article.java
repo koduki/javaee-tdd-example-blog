@@ -24,6 +24,15 @@ public class Article implements Serializable {
     private String title;
     private String Contents;
 
+    public Article() {
+    }
+
+    public Article(Long id, String title, String Contents) {
+        this.id = id;
+        this.title = title;
+        this.Contents = Contents;
+    }
+
     public Long getId() {
         return id;
     }
