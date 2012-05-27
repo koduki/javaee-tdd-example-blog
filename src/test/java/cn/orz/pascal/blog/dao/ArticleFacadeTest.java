@@ -5,6 +5,7 @@
 package cn.orz.pascal.blog.dao;
 
 import cn.orz.pascal.blog.entity.Article;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -132,6 +133,31 @@ public class ArticleFacadeTest extends AbstractJPATest {
         // record2
         assertThat(updatedArticles.get(1).getCreatedAt().getTime(), is(createdAt2));
         assertThat(updatedArticles.get(1).getUpdatedAt().getTime(), is(updatedAt2));
+        utx.commit();
+    }
+
+    @Test
+    public void find_recent_articles_Test() throws Exception {
+        utx.begin();
+        // init and check.
+        assertThat(articleFacade.count(), is(0));
+        for (int i = 0; i < 100; i++) {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+
+            Article article = new Article(null, "title" + i, "contents" + i);
+            article.setCreatedAt(df.parse("2012/04/1"));
+            article.setUpdatedAt(df.parse((2012 + i) + "/04/1"));
+            articleFacade.create(article);
+        }
+        assertThat(articleFacade.count(), is(100));
+
+        // expected.
+        List<Article> articles = simpleSort(articleFacade.findRecently(10), "Title");
+        assertThat(articles.size(), is(10));
+        int i = 90;
+        for (Article article : articles) {
+            assertThat(article.getTitle(), is("title" + (i++)));
+        }
         utx.commit();
     }
 }
